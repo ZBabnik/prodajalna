@@ -142,7 +142,8 @@ var strankaIzRacuna = function(racunId, callback) {
     pb.all("SELECT Customer.* FROM Customer, Invoice \
             WHERE Customer.CustomerId = Invoice.CustomerId AND Invoice.InvoiceId = " + racunId,
     function(napaka, vrstice) {
-      console.log(vrstice);
+      //console.log(vrstice);
+      callback(vrstice);
     })
 }
 
@@ -151,17 +152,19 @@ streznik.post('/izpisiRacunBaza', function(zahteva, odgovor) {
   var form = new formidable.IncomingForm();
   var customer;
   form.parse(zahteva, function (napaka1, polja, datoteke) {
-    customer = strankaIzRacuna(polja.seznamRacunov);
-    
-    if(!customer) 
-      napaka1 = true;
-    
-    odgovor.setHeader('content-type', 'text/xml');
-    odgovor.render('eslog', {
-      vizualiziraj: 'yes_pls',
-      customer: customer
-    })
-    
+    strankaIzRacuna(polja.seznamRacunov, function(customer) {
+      //console.log(customer);
+      if (!customer) 
+        odgovor.sendStatus(500);
+      else {
+        odgovor.setHeader('content-type', 'text/xml');
+        odgovor.render('eslog', {
+          vizualiziraj: "yespls",
+          postavkeRacuna: "",
+          customer: [customer.FirstName, customer.LastName]
+        })
+      }
+    });
   });
 })
 
