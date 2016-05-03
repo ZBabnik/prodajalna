@@ -148,7 +148,21 @@ var strankaIzRacuna = function(racunId, callback) {
 
 // Izpis računa v HTML predstavitvi na podlagi podatkov iz baze
 streznik.post('/izpisiRacunBaza', function(zahteva, odgovor) {
-  odgovor.end();
+  var form = new formidable.IncomingForm();
+  var customer;
+  form.parse(zahteva, function (napaka1, polja, datoteke) {
+    customer = strankaIzRacuna(polja.seznamRacunov);
+    
+    if(!customer) 
+      napaka1 = true;
+    
+    odgovor.setHeader('content-type', 'text/xml');
+    odgovor.render('eslog', {
+      vizualiziraj: 'yes_pls',
+      customer: customer
+    })
+    
+  });
 })
 
 // Izpis računa v HTML predstavitvi ali izvorni XML obliki
