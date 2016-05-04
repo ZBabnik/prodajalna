@@ -156,7 +156,6 @@ streznik.post('/izpisiRacunBaza', function(zahteva, odgovor) {
       if (!customer) 
         odgovor.sendStatus(500);
       else {
-        console.log(customer);
         odgovor.setHeader('content-type', 'text/xml');
         odgovor.render('eslog', {
           vizualiziraj: "yespls",
