@@ -153,15 +153,15 @@ streznik.post('/izpisiRacunBaza', function(zahteva, odgovor) {
   var customer;
   form.parse(zahteva, function (napaka1, polja, datoteke) {
     strankaIzRacuna(polja.seznamRacunov, function(customer) {
-      //console.log(customer);
       if (!customer) 
         odgovor.sendStatus(500);
       else {
+        console.log(customer);
         odgovor.setHeader('content-type', 'text/xml');
         odgovor.render('eslog', {
           vizualiziraj: "yespls",
           postavkeRacuna: "",
-          customer: [customer.FirstName, customer.LastName]
+          customer: customer
         })
       }
     });
