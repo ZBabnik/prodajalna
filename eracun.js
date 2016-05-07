@@ -263,7 +263,7 @@ streznik.get('/prijava', function(zahteva, odgovor) {
 // Prikaz nakupovalne košarice za stranko
 streznik.post('/stranka', function(zahteva, odgovor) {
   var form = new formidable.IncomingForm();
-  var lol = form.parse(zahteva, function (napaka1, polja, datoteke) {
+  form.parse(zahteva, function (napaka1, polja, datoteke) {
     vrniStranke(function(napaka1, stranke){
       for(var i = 0; i < stranke.length; i++) {
         if(stranke[i].CustomerId == polja.seznamStrank) {
