@@ -174,7 +174,7 @@ streznik.post('/izpisiRacunBaza', function(zahteva, odgovor) {
           odgovor.render('eslog', {
             vizualiziraj: "yespls",
             postavkeRacuna: pesmi,
-            customer: customer
+            customer: customer[0]
           })
         }
       })
@@ -265,8 +265,12 @@ streznik.post('/stranka', function(zahteva, odgovor) {
   var form = new formidable.IncomingForm();
   var lol = form.parse(zahteva, function (napaka1, polja, datoteke) {
     console.log(polja);
-    strankaIzRacuna(polja.seznamStrank, function(customer){
-      zahteva.session.user = customer;
+    vrniStranke(function(napaka1, stranke){
+      for(var i = 0; i < stranke.length; i++) {
+        if(stranke[i].CustomerId == polja.seznamStrank) {
+          zahteva.session.user = stranke[i];
+        }
+      }
       odgovor.redirect('/')
     })
   });
