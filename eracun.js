@@ -168,7 +168,7 @@ streznik.post('/izpisiRacunBaza', function(zahteva, odgovor) {
           odgovor.render('eslog', {
             vizualiziraj: "yespls",
             postavkeRacuna: pesmi,
-            customer: customer
+            customer: customer[0]
           })
         } 
       });
