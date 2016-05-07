@@ -236,6 +236,7 @@ streznik.post('/stranka', function(zahteva, odgovor) {
   var form = new formidable.IncomingForm();
   zahteva.session.user = "ok";
   form.parse(zahteva, function (napaka1, polja, datoteke) {
+    //zahteva session user naj bodo kar podatki o uporabniku
     odgovor.redirect('/')
   });
 })
