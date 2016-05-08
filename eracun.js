@@ -251,15 +251,14 @@ streznik.get('/prijava', function(zahteva, odgovor) {
 // Prikaz nakupovalne košarice za stranko
 streznik.post('/stranka', function(zahteva, odgovor) {
   var form = new formidable.IncomingForm();
-  zahteva.session.user = "ok";
   form.parse(zahteva, function (napaka1, polja, datoteke) {
     vrniStranke(function(napaka1, stranke){
       for(var i = 0; i < stranke.length; i++) {
         if(stranke[i].CustomerId == polja.seznamStrank) {
           zahteva.session.user = stranke[i];
+          odgovor.redirect('/')
         }
       }
-      odgovor.redirect('/')
     })
   });
 })
@@ -267,8 +266,8 @@ streznik.post('/stranka', function(zahteva, odgovor) {
 // Odjava stranke
 streznik.post('/odjava', function(zahteva, odgovor) {
     zahteva.session.user = " ";
-    odgovor.redirect('/prijava') 
-})
+    odgovor.redirect('/prijava');
+}) 
 
 
 
