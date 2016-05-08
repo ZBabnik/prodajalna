@@ -50,6 +50,7 @@ streznik.get('/', function(zahteva, odgovor) {
   if(zahteva.session.user == " " || !zahteva.session.user) {
     odgovor.redirect('/prijava');
   }
+  console.log(zahteva.session.user);
     pb.all("SELECT Track.TrackId AS id, Track.Name AS pesem, \
           Artist.Name AS izvajalec, Track.UnitPrice * " +
           razmerje_usd_eur + " AS cena, \
@@ -136,6 +137,7 @@ var pesmiIzRacuna = function(racunId, callback) {
     Track.TrackId IN (SELECT InvoiceLine.TrackId FROM InvoiceLine, Invoice \
     WHERE InvoiceLine.InvoiceId = Invoice.InvoiceId AND Invoice.InvoiceId = " + racunId + ")",
     function(napaka, vrstice) {
+      //console.log(vrstice);
       if (napaka) {
         callback(false);
       } else {
@@ -162,10 +164,11 @@ streznik.post('/izpisiRacunBaza', function(zahteva, odgovor) {
   var form = new formidable.IncomingForm();
   var customer;
   form.parse(zahteva, function (napaka1, polja, datoteke) {
+    //console.log(polja);
     strankaIzRacuna(polja.seznamRacunov, function(customer) {
       pesmiIzRacuna(polja.seznamRacunov, function(pesmi) {
-        if (!customer) 
-        odgovor.sendStatus(500);
+        if (!customer || !pesmi) 
+          odgovor.sendStatus(500);
         else {
           odgovor.setHeader('content-type', 'text/xml');
           odgovor.render('eslog', {
@@ -177,7 +180,8 @@ streznik.post('/izpisiRacunBaza', function(zahteva, odgovor) {
       });
     });
   })
-})
+});
+
 
 // Izpis računa v HTML predstavitvi ali izvorni XML obliki
 streznik.get('/izpisiRacun/:oblika', function(zahteva, odgovor) {
@@ -191,7 +195,8 @@ streznik.get('/izpisiRacun/:oblika', function(zahteva, odgovor) {
       odgovor.setHeader('content-type', 'text/xml');
       odgovor.render('eslog', {
         vizualiziraj: zahteva.params.oblika == 'html' ? true : false,
-        postavkeRacuna: pesmi
+        postavkeRacuna: pesmi,
+        customer: zahteva.session.user
       })  
     }
   })
